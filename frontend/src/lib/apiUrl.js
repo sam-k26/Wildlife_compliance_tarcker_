@@ -1,4 +1,4 @@
-const rawApiUrl = import.meta.env.VITE_API_URL || 'http://localhost:3000/api'
+const rawApiUrl = import.meta.env.VITE_API_URL || '/api'
 
 export const apiBase = rawApiUrl.replace(/\/+$/, '')
 export const apiOrigin = apiBase.replace(/\/api$/, '')
