@@ -7,5 +7,11 @@ export const apiOrigin = apiBase.replace(/\/api$/, '')
 
 export function apiUrl(path) {
   const apiPath = path.startsWith('/api') ? path : `/api${path}`
+  const isVercelHost = typeof window !== 'undefined' && window.location.hostname.endsWith('.vercel.app')
+
+  if (isVercelHost) {
+    return apiPath
+  }
+
   return `${apiOrigin}${apiPath}`
 }
