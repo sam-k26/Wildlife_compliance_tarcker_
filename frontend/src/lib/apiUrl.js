@@ -1,7 +1,6 @@
-const defaultApiUrl = import.meta.env.PROD
-  ? 'https://wildlife-compliance-api.onrender.com/api'
-  : '/api'
-const rawApiUrl = import.meta.env.VITE_API_URL || defaultApiUrl
+const configuredApiUrl = import.meta.env.VITE_API_URL || ''
+const hasPlaceholderApiUrl = /your-render|your-render-backend|wildlife-compliance-api\.onrender\.com/i.test(configuredApiUrl)
+const rawApiUrl = configuredApiUrl && !hasPlaceholderApiUrl ? configuredApiUrl : '/api'
 
 export const apiBase = rawApiUrl.replace(/\/+$/, '')
 export const apiOrigin = apiBase.replace(/\/api$/, '')
