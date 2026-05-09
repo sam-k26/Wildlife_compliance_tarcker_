@@ -5,8 +5,9 @@ const app = express()
 const PORT = process.env.PORT || 3000
 const FRONTEND_URL = process.env.FRONTEND_URL || 'http://localhost:5173'
 const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID || ''
+const normalizeOrigin = (origin) => origin.replace(/\/+$/, '')
 const allowedOrigins = new Set([
-  FRONTEND_URL,
+  normalizeOrigin(FRONTEND_URL),
   'http://localhost:5173',
   'http://127.0.0.1:5173'
 ])
@@ -30,8 +31,12 @@ const users = [
 // Middleware
 app.use(cors({
   origin(origin, callback) {
-    const isLocalDev = /^http:\/\/(localhost|127\.0\.0\.1):\d+$/.test(origin || '')
-    if (!origin || allowedOrigins.has(origin) || isLocalDev) {
+    const normalizedOrigin = origin ? normalizeOrigin(origin) : ''
+    const isLocalDev = /^http:\/\/(localhost|127\.0\.0\.1):\d+$/.test(normalizedOrigin)
+    const isNetlifySite = /^https:\/\/[a-z0-9-]+\.netlify\.app$/i.test(normalizedOrigin)
+    const isVercelSite = /^https:\/\/[a-z0-9-]+\.vercel\.app$/i.test(normalizedOrigin)
+
+    if (!origin || allowedOrigins.has(normalizedOrigin) || isLocalDev || isNetlifySite || isVercelSite) {
       callback(null, true)
       return
     }

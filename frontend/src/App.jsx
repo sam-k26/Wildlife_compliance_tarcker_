@@ -284,9 +284,11 @@ function App() {
       setStats(statisticsData)
       setShipments(shipmentsData.shipments || [])
     } catch (error) {
+      console.warn('Backend health check failed:', error)
       setHealth({
         state: 'offline',
-        message: 'Offline'
+        message: 'Offline',
+        details: error.message
       })
       setStats(null)
       setShipments([])
@@ -558,7 +560,10 @@ function App() {
           <div className="brand-mark">WCT</div>
           <div>
             <h1>Wildlife Compliance Tracker</h1>
-            <div className={`status-pill compact ${isConnected ? 'online' : 'offline'}`}>
+            <div
+              className={`status-pill compact ${isConnected ? 'online' : 'offline'}`}
+              title={health.details || health.message}
+            >
               <span />
               {health.message}
             </div>
