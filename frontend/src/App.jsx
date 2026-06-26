@@ -48,6 +48,15 @@ const emptyTrackedRecord = {
   status: 'Active',
   notes: ''
 }
+const publicSession = {
+  user: {
+    id: 'public-demo-officer',
+    name: 'Demo Officer',
+    email: 'officer@wildlife.local',
+    role: 'Trade Review'
+  },
+  token: 'public-demo-session'
+}
 const defaultTables = {
   species: speciesRegistry.map((item) => ({ ...item, priority: 'Normal' })),
   areas: protectedAreas.map((item) => ({ ...item, priority: 'Normal' })),
@@ -148,7 +157,7 @@ const createTableDrafts = () => Object.fromEntries(
 function App() {
   const [user, setUser] = useState(() => {
     const savedSession = localStorage.getItem('wildlifeComplianceSession')
-    return savedSession ? JSON.parse(savedSession).user : null
+    return savedSession ? JSON.parse(savedSession).user : publicSession.user
   })
   const [trackedRecords, setTrackedRecords] = useState(() => {
     const savedRecords = localStorage.getItem('wildlifeTrackedRecords')
@@ -249,7 +258,7 @@ function App() {
 
   function handleLogout() {
     localStorage.removeItem('wildlifeComplianceSession')
-    setUser(null)
+    setUser(publicSession.user)
     setValidation(null)
     setApiMessage('')
   }
@@ -568,6 +577,11 @@ function App() {
               {health.message}
             </div>
           </div>
+          <div className="topbar-links" aria-label="Workspace sections">
+            <a href="#validator">Validate</a>
+            <a href="#analytics">Analytics</a>
+            <a href="#records">Records</a>
+          </div>
           <div className="session-actions">
             <div className="user-chip">
               <strong>{user.name}</strong>
@@ -584,6 +598,12 @@ function App() {
 
         <div className="hero-grid">
           <div className="hero-copy">
+            <p className="eyebrow">AI-assisted wildlife oversight</p>
+            <h2>Clear every shipment, patrol signal, and protected-area record from one command surface.</h2>
+            <p>
+              A field-ready compliance workspace for CITES validation, ranger reviews, live risk scoring,
+              and conservation records without the spreadsheet drift.
+            </p>
             <div className="hero-actions">
               <a className="primary-button" href="#validator">Validate shipment</a>
               <button className="secondary-button" type="button" onClick={testApi}>Check connection</button>
@@ -592,6 +612,11 @@ function App() {
           </div>
 
           <div className="signal-panel" aria-label="Backend status summary">
+            <div className="signal-map" aria-hidden="true">
+              <span />
+              <span />
+              <span />
+            </div>
             <Metric label="Protected zones" value={protectedAreas.length} />
             <Metric label="Endangered species" value={speciesRegistry.filter((item) => item.status.includes('Endangered')).length} />
             <Metric label="Active violations" value={violations.filter((item) => item.status !== 'Closed').length} />
